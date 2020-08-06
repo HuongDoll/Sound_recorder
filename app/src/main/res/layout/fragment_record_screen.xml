@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/fragments_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        >
+
+        <com.snakelord.soundrecorder.RecorderVisualizerView
+            android:id="@+id/visualizer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="3"
+            android:background="#000000"
+            />
+
+        <FrameLayout
+            android:id="@+id/FFT"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            >
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_alignParentRight="true"
+                />
+
+            <ImageButton
+                android:id="@+id/start_recording"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/ic_play_arrow_red_24dp"
+                android:src="@drawable/ic_play_arrow_red_24dp"
+                />
+
+            <ImageButton
+                android:id="@+id/stop_recording"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="96dp"
+                android:layout_toLeftOf="@+id/chronometer"
+                android:layout_toRightOf="@+id/start_recording"
+                android:background="@drawable/ic_stop_red_24dp"
+                android:src="@drawable/ic_stop_red_24dp" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="49dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="92dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/design_default_color_background"
+                android:text="Learn"
+                android:textColor="@color/design_default_color_primary_variant"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/start_recording"/>
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="49dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/design_default_color_background"
+                android:text="prediction"
+                android:textColor="@color/design_default_color_primary_variant"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/button" />
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:text="OK-NG"
+                android:textColor="@color/design_default_color_background"
+                android:textStyle="bold"
+                android:layout_below="@+id/chronometer"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:text="Prediction result :"
+                android:textAllCaps="true"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textStyle="bold|italic"
+                android:layout_below="@+id/switch1"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
