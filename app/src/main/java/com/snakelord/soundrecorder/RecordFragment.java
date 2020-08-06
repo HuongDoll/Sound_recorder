@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -79,7 +81,6 @@ public final class RecordFragment extends Fragment {
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
             startRecordImageButton.setClickable(false);
-            //
             handler.post(updateVisualizer);
             Log.v("FSDFDSF","GOGOGOGO");
         }
@@ -91,7 +92,12 @@ public final class RecordFragment extends Fragment {
             soundRecorder.stopRecording();
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.stop();
+
+            //reset the raw graph
+            visualizerView.clear();         //clear
+            visualizerView.invalidate();    //reset
             handler.removeCallbacks(updateVisualizer);
+
             startRecordImageButton.setClickable(true);
         }
     }
@@ -124,7 +130,6 @@ public final class RecordFragment extends Fragment {
 //                int x = myAudioRecorder.getMaxAmplitude();
                 visualizerView.addAmplitude(x); // update the VisualizeView
                 visualizerView.invalidate(); // refresh the VisualizerView
-
                 // update in 40 milliseconds
                 handler.postDelayed(this, REPEAT_INTERVAL);
             }

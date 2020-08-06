@@ -53,10 +53,11 @@ public class SoundRecorder {
 
     public boolean startRecording() {
         if (!isRecordStarted()) {
-            if (recorder == null) initRecorder();
             try {
+                initRecorder();
                 recorder.start();
                 recordStarted = true;
+                showStartToast();
             } catch (IllegalStateException e) {
                 showErrorToast();
                 WorkWithFiles.removeRecord(recordName);
@@ -69,6 +70,7 @@ public class SoundRecorder {
     public void stopRecording() { 
         if (isRecordStarted()) {
             recorder.stop();
+            showStopToast();
             recordStarted = false;
         }
     }
@@ -78,7 +80,12 @@ public class SoundRecorder {
     private void showErrorToast() {
         Toast.makeText(context, R.string.illegal_exception_when_mic_used,Toast.LENGTH_SHORT).show();
     }
-
+    private void showStopToast(){
+        Toast.makeText(context, R.string.stop_record,Toast.LENGTH_SHORT).show();
+    }
+    private void showStartToast(){
+        Toast.makeText(context, R.string.start_record, Toast.LENGTH_SHORT).show();
+    }
     public void releaseRecorder() {
         recorder.reset();
         recorder.release();
