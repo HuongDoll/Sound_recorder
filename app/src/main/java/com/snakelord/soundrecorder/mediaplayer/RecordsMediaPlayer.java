@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class RecordsMediaPlayer {
 
-    private MediaPlayer player;
+    public MediaPlayer player;
     private File record;
     private FileInputStream fileInputStream;
     private boolean playerStarted = false;

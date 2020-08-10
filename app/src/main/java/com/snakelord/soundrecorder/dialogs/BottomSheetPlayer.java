@@ -2,6 +2,7 @@ package com.snakelord.soundrecorder.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,9 +20,10 @@ public final class BottomSheetPlayer extends BottomSheetDialogFragment {
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView recordNameTextView;
     private ImageButton startPlayingImageButton;
-    private ImageButton stopPlayingImageButton;
+//    private ImageButton stopPlayingImageButton;
     private RecordsMediaPlayer recordsPlayer;
     private static final String RECORD_PATH = "Record path";
+    private TextView time1, time2;
 
     public static BottomSheetPlayer newInstance(String path) {
        BottomSheetPlayer bottomSheet = new BottomSheetPlayer();
@@ -44,7 +46,9 @@ public final class BottomSheetPlayer extends BottomSheetDialogFragment {
         View bottomSheet = View.inflate(getContext(), R.layout.bottom_sheet_record_mediaplayer, null);
         recordNameTextView = bottomSheet.findViewById(R.id.record_name_player);
         startPlayingImageButton = bottomSheet.findViewById(R.id.start_record);
-        stopPlayingImageButton = bottomSheet.findViewById(R.id.stop_player);
+//        stopPlayingImageButton = bottomSheet.findViewById(R.id.stop_player);
+        time1=bottomSheet.findViewById(R.id.time1);
+        time2=bottomSheet.findViewById(R.id.time2);
         setRecordName();
         initRecordsPlayer();
         setImageButtonsOnClickListener();
@@ -75,20 +79,25 @@ public final class BottomSheetPlayer extends BottomSheetDialogFragment {
             else
                 pausePlayer();
         });
-        stopPlayingImageButton.setOnClickListener(v -> {
-            recordsPlayer.stopPlayer();
-            dismiss();
-        });
+//        stopPlayingImageButton.setOnClickListener(v -> {
+//            recordsPlayer.stopPlayer();
+//            dismiss();
+//        });
     }
 
     private void startPlayer() {
         startPlayingImageButton.setImageResource(R.drawable.ic_pause_red_24dp);
+
         recordsPlayer.startPlayer();
+//        int duration = recordsPlayer.player.getDuration();
+        Log.i("code", String.valueOf(recordsPlayer.player.getAudioSessionId()));
+
     }
 
     private void pausePlayer() {
-        startPlayingImageButton.setImageResource(R.drawable.ic_play_arrow_red_24dp);
+        startPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         recordsPlayer.pausePlayer();
+
     }
 
     @Override

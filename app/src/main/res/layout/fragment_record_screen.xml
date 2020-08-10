@@ -11,6 +11,10 @@
         android:orientation="vertical"
         android:weightSum="10"
         >
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            app:layout_constraintTop_toTopOf="@id/FFT"/>
 
         <com.snakelord.soundrecorder.RecorderVisualizerView
             android:id="@+id/visualizer"
@@ -20,12 +24,16 @@
             android:layout_weight="3"
             android:background="#000000"
             />
-
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            app:layout_constraintTop_toBottomOf="@id/FFT"/>
         <FrameLayout
             android:id="@+id/FFT"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:background="#000000"/>
 
         <RelativeLayout
 
@@ -64,7 +72,6 @@
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="96dp"
-                android:layout_toLeftOf="@+id/chronometer"
                 android:layout_toRightOf="@+id/start_recording"
                 android:background="@drawable/ic_stop_red_24dp"
                 android:src="@drawable/ic_stop_red_24dp" />

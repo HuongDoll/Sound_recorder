@@ -37,6 +37,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'de.cketti.mailto:email-intent-builder:2.0.0'
-//    implementation group: 'org.quifft', name: 'quifft', version: '0.1.1' //đây là đc thư viên jkia
+    implementation group: 'org.quifft', name: 'quifft', version: '0.1.1' //đây là đc thư viên jkia
 //    implementation 'com.github.armcha:SpaceNavigationView:1.6.0'
+
 }
