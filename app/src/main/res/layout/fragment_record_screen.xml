@@ -28,7 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             app:layout_constraintTop_toBottomOf="@id/FFT"/>
-        <FrameLayout
+
+        <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/FFT"
             android:layout_width="match_parent"
             android:layout_height="0dp"

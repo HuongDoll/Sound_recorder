@@ -97,7 +97,6 @@ public final class BottomSheetPlayer extends BottomSheetDialogFragment {
     private void pausePlayer() {
         startPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         recordsPlayer.pausePlayer();
-
     }
 
     @Override
