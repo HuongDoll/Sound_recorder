@@ -57,7 +57,7 @@ public final class RecordFragment extends Fragment {
 
     private Handler handler = new Handler();
     private RecorderVisualizerView visualizerView;
-    public static final int REPEAT_INTERVAL = 40;
+    public static final int REPEAT_INTERVAL = 0;
     //m chart
     public static CombinedChart mChart;
     //Audio record
@@ -122,8 +122,6 @@ public final class RecordFragment extends Fragment {
         return recordScreen;
     }
 
-
-
     private void initRecorder() {
         if (soundRecorder == null) soundRecorder = new SoundRecorder(getContext());
     }
@@ -145,7 +143,7 @@ public final class RecordFragment extends Fragment {
 
     private void startRecord() {
         initRecorder();
-        if (soundRecorder.startRecording()) {
+        if ( soundRecorder.startRecording()) {
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
 
@@ -163,7 +161,10 @@ public final class RecordFragment extends Fragment {
             soundRecorder.stopRecording();
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.stop();
-//            audioRecord.stop();
+
+            audioRecord.stop();
+            mChart.setData(null);
+            mChart.invalidate();
             //reset the raw graph
             visualizerView.clear();         //clear
             visualizerView.invalidate();    //reset
@@ -200,8 +201,7 @@ public final class RecordFragment extends Fragment {
                 visualizerView.addAmplitude(x); // update the VisualizeView
                 visualizerView.invalidate(); // refresh the VisualizerView
                 handler.postDelayed(this, REPEAT_INTERVAL);
-
-//                writeAudioDataToFile();
+                writeAudioDataToFile();
             }
         }
     };
@@ -210,19 +210,8 @@ public final class RecordFragment extends Fragment {
     //Audio:
     private void writeAudioDataToFile() {
         byte data[] = new byte[bufferSize];
-//        String filename = getTempFilename();
-//        FileOutputStream os = null;
-//
-//        try {
-//            os = new FileOutputStream(filename);
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
         int read = 0;
-
-//        if (null != os) {
-            while (SoundRecorder.recordStarted) {
+        if (SoundRecorder.recordStarted) {
                 read = audioRecord.read(data, 0, bufferSize);
                 if (read > 0) {
                     absNormalizedSignal = calculateFFT(data);
@@ -233,22 +222,14 @@ public final class RecordFragment extends Fragment {
                 dataLine.setData(lineDatas);
                 mChart.setData(dataLine);
                 mChart.invalidate();
-//            }
-
-//            try {
-//                os.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
     }
     private static DataSet dataChart() {
 
         LineData d = new LineData();
-
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int index = 0; index < 12; index++) {
+        for (int index = 0; index < 512; index++) {
             entries.add(new Entry(index, (float) absNormalizedSignal[index]));
         }
 
@@ -260,8 +241,6 @@ public final class RecordFragment extends Fragment {
         set.setFillColor(Color.GREEN);
         set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         set.setDrawValues(true);
-//        set.setValueTextSize(10f);
-//        set.setValueTextColor(Color.GREEN);
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         d.addDataSet(set);
@@ -280,7 +259,6 @@ public final class RecordFragment extends Fragment {
 
         if(tempFile.exists())
             tempFile.delete();
-//        Log.i("DMDM", file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
         return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
     }
 
@@ -313,13 +291,6 @@ public final class RecordFragment extends Fragment {
                 mPeakPos = i;
             }
         }
-//        String test = "";
-//        for (int i =0; i < 512; i++)
-//        {
-//            test = test.concat(String.valueOf(absSignal[i]));
-//            test.concat("/");
-//        }
-//        Log.v("FFFFF",test);
         return absSignal;
 
     }
