@@ -6,6 +6,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.telecom.RemoteConference;
@@ -38,12 +39,21 @@ import com.snakelord.soundrecorder.RecorderVisualizerView;
 import com.snakelord.soundrecorder.recorder.Complex;
 import com.snakelord.soundrecorder.recorder.FFT;
 import com.snakelord.soundrecorder.recorder.SoundRecorder;
+import com.snakelord.soundrecorder.workingFolder.WorkingFolder;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+import static android.os.FileUtils.*;
+import static com.snakelord.soundrecorder.recorder.SoundRecorder.FFT_EX;
 
 
 public final class RecordFragment extends Fragment {
@@ -72,10 +82,15 @@ public final class RecordFragment extends Fragment {
     public int bufferSize = 0;
 //    Complex[] fftTempArray;
 //    Complex[] fftArray;
-    public static double[] absNormalizedSignal = null;
+    private String  resultFFT = "";
+    //FFT file
+    private static final String RECORD_NAME = "/Record_";
+    private static final String DATE_PATTERN = "dd-M-yyyy hh:mm:ss";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setRetainInstance(true);
     }
 
@@ -117,10 +132,12 @@ public final class RecordFragment extends Fragment {
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f);
 
-
-
         return recordScreen;
     }
+
+//    public static String generateFFTName() {
+//        return
+//    }
 
     private void initRecorder() {
         if (soundRecorder == null) soundRecorder = new SoundRecorder(getContext());
@@ -146,7 +163,18 @@ public final class RecordFragment extends Fragment {
         if ( soundRecorder.startRecording()) {
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
-
+//            try {
+//                fop = new FileOutputStream(file);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                String name = SoundRecorder.recordsPath.getFolder() + RECORD_NAME + new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date()) + FFT_EX;
+//                fw = new FileWriter(name);
+//                Log.i("NAME_FFT",name);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             audioRecord.startRecording();
 
             startRecordImageButton.setClickable(false);
@@ -165,11 +193,13 @@ public final class RecordFragment extends Fragment {
             audioRecord.stop();
             mChart.setData(null);
             mChart.invalidate();
+
             //reset the raw graph
             visualizerView.clear();         //clear
             visualizerView.invalidate();    //reset
             handler.removeCallbacks(updateVisualizer);
 
+            Log.i("FILEEE", resultFFT);
             startRecordImageButton.setClickable(true);
         }
     }
@@ -198,6 +228,7 @@ public final class RecordFragment extends Fragment {
             if (soundRecorder.isRecordStarted()) // if we are already recording
             {
                 float x = soundRecorder.recorder.getMaxAmplitude();
+                Log.i("BIENDO",String.valueOf(x));
                 visualizerView.addAmplitude(x); // update the VisualizeView
                 visualizerView.invalidate(); // refresh the VisualizerView
                 handler.postDelayed(this, REPEAT_INTERVAL);
@@ -212,55 +243,86 @@ public final class RecordFragment extends Fragment {
         byte data[] = new byte[bufferSize];
         int read = 0;
         if (SoundRecorder.recordStarted) {
+                double[] absNormalizedSignal = null;
                 read = audioRecord.read(data, 0, bufferSize);
+
                 if (read > 0) {
                     absNormalizedSignal = calculateFFT(data);
                 }
+//                fetchFFTData(absNormalizedSignal);
+
                 CombinedData dataLine = new CombinedData();
                 LineData lineDatas = new LineData();
-                lineDatas.addDataSet((ILineDataSet) dataChart());
+                lineDatas.addDataSet((ILineDataSet) dataChart(absNormalizedSignal));
                 dataLine.setData(lineDatas);
                 mChart.setData(dataLine);
                 mChart.invalidate();
         }
     }
-    private static DataSet dataChart() {
+//    File file = new File(SoundRecorder.generateFFTName());
+//    static FileOutputStream fop;
+//    static String result = ""
+    FileWriter fw = null;
+    private void fetchFFTData(double [] FFTArray) {
+        try {
+            for (int i = 0; i < 512; i++) {
+                try {
+                    fw.write(String.valueOf(FFTArray[i]));
+                    if (i < 511)
+                        fw.write(",");
+                    else
+                        fw.write("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                result = result.concat(String.valueOf(FFTArray[i]));
+//                result = result.concat(",");
+            }
+
+//        Log.i("TESTXX", result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private DataSet dataChart(double[] absNormalizedSignal) {
 
         LineData d = new LineData();
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int index = 0; index < 512; index++) {
-            entries.add(new Entry(index, (float) absNormalizedSignal[index]));
+        for (int index = 50; index < 512; index++) {
+            entries.add(new Entry(index-50, (float) absNormalizedSignal[index]));
         }
 
         LineDataSet set = new LineDataSet(entries, "Request Ots approved");
         set.setColor(Color.GREEN);
         set.setLineWidth(2.5f);
         set.setCircleColor(Color.GREEN);
-        set.setCircleRadius(5f);
+        set.setCircleRadius(1f);
         set.setFillColor(Color.GREEN);
         set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         set.setDrawValues(true);
-
+        set.setValueTextSize(10f);
+        set.setValueTextColor(Color.GREEN);
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         d.addDataSet(set);
         return set;
     }
-    private String getTempFilename(){
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-
-        File file = new File(filepath,AUDIO_RECORDER_FOLDER);
-
-        if(!file.exists()){
-            file.mkdirs();
-        }
-
-        File tempFile = new File(filepath,AUDIO_RECORDER_TEMP_FILE);
-
-        if(tempFile.exists())
-            tempFile.delete();
-        return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
-    }
+//    private String getTempFilename(){
+//        String filepath = Environment.getExternalStorageDirectory().getPath();
+//
+//        File file = new File(filepath,AUDIO_RECORDER_FOLDER);
+//
+//        if(!file.exists()){
+//            file.mkdirs();
+//        }
+//
+//        File tempFile = new File(filepath,AUDIO_RECORDER_TEMP_FILE);
+//
+//        if(tempFile.exists())
+//            tempFile.delete();
+//        return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
+//    }
 
     public double[] calculateFFT(byte[] signal)
     {

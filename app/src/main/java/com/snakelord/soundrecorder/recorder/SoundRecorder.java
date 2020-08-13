@@ -32,8 +32,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class SoundRecorder {
+    public static final String FFT_EX = ".txt";
     public MediaRecorder recorder;
-    private WorkingFolder recordsPath;
+    public static WorkingFolder recordsPath;
     private Context context;
     private String recordName;
     public static boolean recordStarted = false;
@@ -90,6 +91,7 @@ public class SoundRecorder {
     private String generateRecordName() {
         return recordsPath.getFolder() + RECORD_NAME + new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date()) + RECORD_FORMAT;
     }
+
 
     public boolean startRecording() {
         if (!isRecordStarted()) {
